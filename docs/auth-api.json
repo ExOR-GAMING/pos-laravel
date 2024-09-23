@@ -1,0 +1,129 @@
+{
+    "openapi":"3.0.3",
+    "info": {
+      "title":"Auth API",
+      "version":"1.0"
+    },
+    "servers": [
+      {"url":"https://localhost:8000/api/v1"}
+    ],
+    "paths": {
+      "/register": {
+        "post": {
+          "description": "Create a new user",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["fullName", "email", "password", "passwordConfirmation"],
+                  "properties": {
+                    "fullName": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "password": {
+                      "type": "string"
+                    },
+                    "passwordConfirmation": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "fullName": "John Doe",
+                  "email": "johndoe@gmail.com",
+                  "password": "john1234",
+                  "passwordConfirmation": "john1234"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "User successfully registered",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "fullName": {
+                            "type": "string"
+                          },
+                          "email": {
+                            "type": "string"
+                          },
+                          "token": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "errors": {
+                        "type": "object"
+                      }
+                    }
+                  },
+                  "example": {
+                    "message": "Registration successful",
+                    "data": {
+                      "id": 1,
+                      "fullName": "John Doe",
+                      "email": "johndoe@gmail.com",
+                      "token": ""
+                    },
+                    "errors": {}
+                  }
+                } 
+              }
+            },
+            "422": {
+              "description": "Validation errors",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "data": {},
+                      "errors": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "example": {
+                    "message": "Validation error",
+                    "data": {},
+                    "errors": {
+                      "email": [
+                        "Email provider not valid"
+                      ],
+                      "password": [
+                        "The password field is required",
+                        "The password must be at least 8 characters"
+                      ]
+                    }
+                  }
+                } 
+              }
+            }
+          }
+        }
+      }
+    }
+  }
