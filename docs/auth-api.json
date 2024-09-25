@@ -16,9 +16,9 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["fullName", "email", "password", "passwordConfirmation"],
+                  "required": ["full_name", "email", "password", "password_confirmation"],
                   "properties": {
-                    "fullName": {
+                    "full_name": {
                       "type": "string"
                     },
                     "email": {
@@ -27,16 +27,16 @@
                     "password": {
                       "type": "string"
                     },
-                    "passwordConfirmation": {
+                    "password_confirmation": {
                       "type": "string"
                     }
                   }
                 },
                 "example": {
-                  "fullName": "John Doe",
+                  "full_name": "John Doe",
                   "email": "johndoe@gmail.com",
                   "password": "john1234",
-                  "passwordConfirmation": "john1234"
+                  "password_confirmation": "john1234"
                 }
               }
             }
@@ -58,7 +58,7 @@
                           "id": {
                             "type": "number"
                           },
-                          "fullName": {
+                          "full_name": {
                             "type": "string"
                           },
                           "email": {
