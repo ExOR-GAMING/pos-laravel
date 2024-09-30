@@ -38,6 +38,11 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user->makeHidden(['created_at', 'updated_at'])));
 
-        return new UserResource($user);
+        $token = $user->createToken($request->device_name, ['limited-access'])->plainTextToken;
+
+        return response()->json([
+            'message' => 'Registration successful',
+            'token' => $token,
+        ]);
     }
 }
