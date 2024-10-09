@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 
@@ -23,12 +24,14 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'full_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'device_name' => ['required', 'string'],
         ]);
+
+        $verification_code = random_int(100000, 999999);
 
         $user = User::create([
             'full_name' => $request->full_name,
@@ -36,8 +39,14 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->string('password')),
         ]);
 
-        event(new Registered($user->makeHidden(['created_at', 'updated_at'])));
+        Cache::put('email_verification_' . $user->id, $verification_code, now()->addMinutes(5));
 
-        return new UserResource($user);
+        event(new Registered($user));
+
+        $token = $user->createToken($request->device_name, ['basic:full-access'])->plainTextToken;
+
+        return response()->json([
+            'token' => $token,
+        ], 201);
     }
 }

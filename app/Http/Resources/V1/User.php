@@ -16,21 +16,10 @@ class User extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            ...parent::toArray($request),
-            'token' => $this->createToken($request->device_name, ['limited-access'])->plainTextToken,
-        ];
-    }
-
-    /**
-     * Get additional data that should be returned with the resource array.
-     *
-     * @return array<string, mixed>
-     */
-    public function with(Request $request): array
-    {
-        return [
-            'message' => 'Registration successful',
-            'errors' => (object) [],
+            'id' => $this->id,
+            'full_name' => $this->full_name,
+            'email' => $this->email,
+            'email_verified_at' => $this->email_verified_at,
         ];
     }
 }
