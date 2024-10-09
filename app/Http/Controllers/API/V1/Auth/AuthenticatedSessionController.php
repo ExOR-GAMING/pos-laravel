@@ -22,23 +22,21 @@ class AuthenticatedSessionController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(LoginRequest $request) : JsonResponse
+    public function store(LoginRequest $request): JsonResponse
     {
         $request->authenticate();
 
         $user = $request->user();
-        
-        $user->tokens->each(function ($value){
-            if (in_array('basic:full-access',$value->abilities)){
+
+        $user->tokens->each(function ($value) {
+            if (in_array('basic:full-access', $value->abilities)) {
                 $value->delete();
             }
         });
 
         $token = $user->createToken($request->device_name, ['basic:full-access'])->plainTextToken;
 
-        return response()->json([
-            'token' => $token,
-        ], 201);
+        return response()->json(['token' => $token]);
     }
 
     /**
@@ -48,7 +46,7 @@ class AuthenticatedSessionController extends Controller
     {
         $isDeletionSuccess = $request->user()->currentAccessToken()->delete();
 
-        if(!$isDeletionSuccess){
+        if (!$isDeletionSuccess) {
             return response()->json(['message' => 'Error when logging out user'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 

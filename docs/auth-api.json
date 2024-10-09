@@ -102,7 +102,7 @@
                                 "email": "johndoe@gmail.com",
                                 "password": "john1234",
                                 "passwordConfirmation": "john1234",
-                                "deviceName": "Redmi 9"
+                                "deviceName": "John's Phone"
                             }
                         }
                     }
@@ -148,13 +148,381 @@
                                     }
                                 },
                                 "example": {
-                                    "message": "The given data was invalid",
+                                    "message": "Email provider is not valid",
                                     "errors": {
-                                        "email": ["Email provider not valid"],
+                                        "email": ["Email provider is not valid"],
                                         "password": [
                                             "The password field is required",
                                             "The password must be at least 8 characters"
                                         ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post":{
+                "description": "Logging in a user",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["email", "password", "deviceName"],
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "deviceName": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "email": "johndoe@gmail.com",
+                                "password": "john1234",
+                                "deviceName": "John's Phone"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User successfully logged in",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "token": "plain-text-token"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Email provider is not valid",
+                                    "errors": {
+                                        "email": ["Email provider is not valid"],
+                                        "password": [
+                                            "The password field is required",
+                                            "The password must be at least 8 characters"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/email/verification-notification": {
+            "post": {
+                "description": "Request a new verification email",
+                "requestBody": {
+                    "content": {}
+                },
+                "responses": {
+                    "200": {
+                        "description": "Verification email sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Verification code sent"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Failed to send verification email",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Your email already verified"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/verify-email": {
+            "post": {
+                "description": "Verifying user's email",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["verificationCode"],
+                                "properties": {
+                                    "verificationCode": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "verificationCode": "123456"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Verification success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Email verified"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Verification fail",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "properties": {
+                                                "verificationCode": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Invalid code",
+                                    "errors": {
+                                        "verificationCode": ["Invalid code"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/forgot-password": {
+            "post": {
+                "description": "Request a new password reset email",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["email"],
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "email": "johndoe@gmail.com"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password reset email sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "We have emailed you a password reset email"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Failed to send password reset email",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "properties": {
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Account not found",
+                                    "errors": {
+                                        "email": ["Account not found"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/reset-password": {
+            "post": {
+                "description": "Resetting user password",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["email", "password", "passwordConfirmation", "token"],
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "passwordConfirmation": {
+                                        "type": "string"
+                                    },
+                                    "token":{
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "email": "johndoe@gmail.com",
+                                "password": "john1234",
+                                "passwordConfirmation": "john1234",
+                                "token": "1q2w3e" 
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Password updated"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Failed to update password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "properties": {
+                                                "token": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Invalid token",
+                                    "errors": {
+                                        "token": ["Invalid token"]
                                     }
                                 }
                             }
